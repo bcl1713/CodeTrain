@@ -19,6 +19,15 @@ public class LVector {
   private double y;
   private double z;
   
+  public LVector(double x, double y, double z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
+  public LVector(double x, double y) {
+    this(x, y, 0);
+  }
   public double getX() {
     return x;
   }
@@ -38,14 +47,8 @@ public class LVector {
     this.z = z;
   }
   
-  public LVector(double x, double y, double z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-
-  public LVector(double x, double y) {
-    this(x, y, 0);
+  public double getMagnitude() {
+    return Math.sqrt(x * x + y * y + z * z);
   }
   
   @Override
@@ -78,14 +81,18 @@ public class LVector {
     return Double.doubleToLongBits(z) == Double.doubleToLongBits(other.z);
   }
 
-  public double getMagnitude() {
-    return Math.sqrt(x * x + y * y + z * z);
-  }
+  
 
   public void add(LVector other) {
     this.x += other.x; 
     this.y += other.y;
     this.z += other.z;
+  }
+
+  public static LVector add(LVector v1, LVector v2) {
+    LVector vector = v1.copy();
+    vector.add(v2);
+    return vector;
   }
 
   public void sub(LVector other) {
@@ -94,6 +101,12 @@ public class LVector {
     this.z -= other.z;
   }
   
+  public static LVector sub(LVector v1, LVector v2) {
+    LVector vector = v1.copy();
+    vector.sub(v2);
+    return vector;
+  }
+
   public void scale(double scalar) {
     this.x *= scalar;
     this.y *= scalar;
@@ -122,10 +135,11 @@ public class LVector {
     }
   }
 
-  public static LVector sub(LVector v1, LVector v2) {
+  
+
+  public static LVector mul(LVector v1, double scalar) {
     LVector vector = v1.copy();
-    LVector vector2 = v2.copy();
-    vector.sub(vector2);
+    vector.scale(scalar);
     return vector;
   }
 }

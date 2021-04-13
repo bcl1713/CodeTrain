@@ -12,9 +12,9 @@
 
 
 import java.awt.Color;
-import java.awt.event.MouseEvent;
 
 import lib.LDisplay;
+import lib.LMouse;
 import lib.LMover;
 import lib.LVector;
 
@@ -22,10 +22,10 @@ public class App extends LDisplay{
 
     private static final long serialVersionUID = -6015850204183842450L;
     
-    private boolean mouseDown;
-    private transient LVector mouse;
+    private transient LMouse mouse = super.getMouse();
 
     private transient LMover[] movers;
+
 
     App(int width, int height) {
         super(width, height);
@@ -48,45 +48,23 @@ public class App extends LDisplay{
     @Override
     public void update() {
         for (LMover lMover : movers) {
-            if (mouseDown) {
-                LVector dir = new LVector(
-                    mouse.getX() - lMover.getPosition().getX(), 
-                    mouse.getY() - lMover.getPosition().getY());
-                dir.setMagnitude(0.05);
-                lMover.setAcceleration(dir);
-            } else {
-                lMover.setAcceleration(new LVector(0, 0));
+            if (mouse.isPressed()) {
+                LVector dir = LVector.sub(mouse.getPosition(), lMover.getPosition());
+                dir.setMagnitude(10);
+                lMover.addForce(dir);
             }
             lMover.update();
-            if (lMover.getPosition().getX() > getWidth() - lMover.getSize()) {
-                lMover.setVelocity(new LVector(lMover.getVelocity().getX() * -1, lMover.getVelocity().getY()));
-                lMover.setPosition(new LVector(getWidth() - lMover.getSize(), lMover.getPosition().getY()));
-            }
-            
-            if (lMover.getPosition().getX() < 0) {
-                lMover.setVelocity(new LVector(lMover.getVelocity().getX() * -1, lMover.getVelocity().getY()));
-                lMover.setPosition(new LVector(0, lMover.getPosition().getY()));
-            }
-            
-            if (lMover.getPosition().getY() > getHeight() -lMover.getSize()) {
-                lMover.setVelocity(new LVector(lMover.getVelocity().getX(), lMover.getVelocity().getY() * -1));
-                lMover.setPosition(new LVector(lMover.getPosition().getX(), getHeight() - lMover.getSize()));
-            }
-            
-            if (lMover.getPosition().getY() < 0) {
-                lMover.setVelocity(new LVector(lMover.getVelocity().getX(), lMover.getVelocity().getY() * -1));
-                lMover.setPosition(new LVector(lMover.getPosition().getX(), 0));
-            }
        }
     }
 
     @Override
     public void start() {
-        int numMovers = 30;
-        int moverSize = 10;
+        super.start();
+        int numMovers = 60;
         
         movers = new LMover[numMovers];
         for (int i = 0; i < numMovers; i++) {
+            double moverSize = Math.random() * 120 + 1;
             movers[i] = new LMover(
                 new LVector(
                     Math.random() * (getWidth() - 2 * moverSize) + moverSize, 
@@ -96,48 +74,13 @@ public class App extends LDisplay{
                     Math.random() * 4 - 2, 
                     Math.random() * 4 - 2
                 ),
-                new LVector(0, 0)
+                new LVector(0, 0),
+                this
             );
             movers[i].setSize(moverSize);
+            movers[i].setMass(moverSize);
             movers[i].setSpeedLimited(true);
-            movers[i].setSpeedLimit(5);
+            movers[i].setSpeedLimit(10);
         }
-        mouse = new LVector(0, 0);
-        addMouseMotionListener(this);
-    }
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        mouse.setX(e.getX());
-        mouse.setY(e.getY());        
-    }
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        System.out.println(e);
-        mouse.setX(e.getX());
-        mouse.setY(e.getY());
-    }
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-        System.out.println(e);
-        this.mouseDown = true;        
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        this.mouseDown = false;        
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-        // TODO Auto-generated method stub
-        
     }
 }

@@ -7,6 +7,7 @@
  * Last Modified: Sun Apr 11 2021
  * HISTORY:
  * Date        Comments
+ * 2021-04-13  Add mouse interactions
  * 2021-04-12  Initial commit
  */
 
@@ -17,6 +18,7 @@ import java.awt.Canvas;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -28,7 +30,10 @@ public abstract class LDisplay extends Canvas implements Runnable, MouseInputLis
   private static final int DEFAULT_HEIGHT = 600;
   private static final int UPDATES_PER_SECOND = 60;
 
-  public boolean running = true;
+
+  private transient LMouse mouse = new LMouse();
+
+  private boolean running = true;
 
   private int fps;
 
@@ -59,12 +64,14 @@ public abstract class LDisplay extends Canvas implements Runnable, MouseInputLis
     bufferStrategy = getBufferStrategy();
     Thread thread = new Thread(this, "Display");
     graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
+    this.addMouseMotionListener(this);
     this.addMouseListener(this);
     thread.start();
     running = true;
   }
 
-  public abstract void start();
+  public void start() {
+  }
 
 
   @Override
@@ -111,4 +118,42 @@ public abstract class LDisplay extends Canvas implements Runnable, MouseInputLis
     return fps;
   }
   
+  @Override
+  public void mouseDragged(MouseEvent e) {
+      mouse.setPosition(new LVector(e.getX(), e.getY()));
+  }
+
+  @Override
+  public void mouseMoved(MouseEvent e) {
+      mouse.setPosition(new LVector(e.getX(), e.getY()));
+  }
+  
+  @Override
+  public void mousePressed(MouseEvent e) {
+      mouse.setPressed(true); 
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+      mouse.setPressed(false);      
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent e) {
+    // Nothing here
+  }
+
+  @Override
+  public void mouseExited(MouseEvent e) {
+    // Nothing here
+  }
+
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    //Nothing here
+  }
+
+  public LMouse getMouse() {
+    return mouse;
+  }
 }
