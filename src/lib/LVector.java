@@ -112,7 +112,13 @@ public class LVector {
     this.y *= scalar;
     this.z *= scalar;
   }
-
+  
+  public static LVector scale(LVector v1, double scalar) {
+    LVector vector = v1.copy();
+    vector.scale(scalar);
+    return vector;
+  }
+  
   public void normalize() {
     double mag = this.getMagnitude();
     if (mag != 0) {
@@ -135,11 +141,5 @@ public class LVector {
     }
   }
 
-  
-
-  public static LVector mul(LVector v1, double scalar) {
-    LVector vector = v1.copy();
-    vector.scale(scalar);
-    return vector;
-  }
+ 
 }

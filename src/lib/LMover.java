@@ -41,7 +41,7 @@ public class LMover {
   }
 
   public void addForce(LVector force) {
-    LVector f = LVector.mul(force, 1 / mass);
+    LVector f = LVector.scale(force, 1 / mass);
     acceleration.add(f);
   }
 
