@@ -10,22 +10,18 @@
  * 2021-04-12  Initial Commit
  */
 
-
 import java.awt.Color;
 
 import lib.LDisplay;
-import lib.LMouse;
 import lib.LMover;
+import lib.LUtilities;
 import lib.LVector;
 
 public class App extends LDisplay{
 
     private static final long serialVersionUID = -6015850204183842450L;
     
-    private transient LMouse mouse = super.getMouse();
-
     private transient LMover[] movers;
-
 
     App(int width, int height) {
         super(width, height);
@@ -39,48 +35,62 @@ public class App extends LDisplay{
     public void render() {
         graphics.setColor(Color.BLACK);
         graphics.fillRect(0, 0, getWidth(), getHeight());
+        
+        graphics.setColor(Color.GREEN);
+
         for (LMover lMover : movers) {
-            lMover.render(graphics);
+            lMover.render(graphics);    
         }
+        
         graphics.drawString(Integer.toString(getFps()), 10, 20);
     }
 
     @Override
     public void update() {
-        for (LMover lMover : movers) {
-            if (mouse.isPressed()) {
-                LVector dir = LVector.sub(mouse.getPosition(), lMover.getPosition());
-                dir.setMagnitude(10);
-                lMover.addForce(dir);
+        for (int i = 0; i < movers.length; i++) {
+            for (int j = 0; j < movers.length; j++) {
+                LVector dif = LVector.sub(
+                    movers[j].getPosition(), 
+                    movers[i].getPosition()
+                );
+                dif.setMagnitude(0.0001);
+                movers[i].addForce(dif);
+                movers[i].setSize(movers[i].getSize() + 0.00001);
+                movers[i].setMass(movers[i].getSize() / 16);
             }
-            lMover.update();
-       }
+        }
+        // lMover.update();
     }
 
     @Override
     public void start() {
-        super.start();
-        int numMovers = 60;
-        
+        int numMovers = 100;
         movers = new LMover[numMovers];
         for (int i = 0; i < numMovers; i++) {
-            double moverSize = Math.random() * 120 + 1;
-            movers[i] = new LMover(
+            movers[i] = new LMover(this);
+            movers[i].setPosition(
                 new LVector(
-                    Math.random() * (getWidth() - 2 * moverSize) + moverSize, 
-                    Math.random() * (getHeight() - 2 * moverSize) + moverSize
-                ), 
-                new LVector(
-                    Math.random() * 4 - 2, 
-                    Math.random() * 4 - 2
-                ),
-                new LVector(0, 0),
-                this
+                    LUtilities.map(Math.random(), 0, 1, 0, getWidth()), 
+                    LUtilities.map(Math.random(), 0, 1, 0, getHeight())
+                )
             );
-            movers[i].setSize(moverSize);
-            movers[i].setMass(moverSize);
+            movers[i].setVelocity(
+                new LVector(
+                    Math.random() * 2 - 1,
+                    Math.random() * 2 - 1)
+                );
             movers[i].setSpeedLimited(true);
-            movers[i].setSpeedLimit(10);
+            movers[i].setSpeedLimit(4);
+            movers[i].getThread().start();
+            movers[i].setColor(new Color(
+
+                (int)(Math.random() * 255),
+                (int)(Math.random() * 255),
+                (int)(Math.random() * 255)
+            ));
+            movers[i].setSize((Math.random() * 24) + 24);
+            movers[i].setMass(movers[i].getSize() / 16);
         }
+        
     }
 }

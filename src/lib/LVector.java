@@ -7,6 +7,7 @@
  * Last Modified: Mon Apr 12 2021
  * HISTORY:
  * Date        Comments
+ * 2021-04-14  Add Heading
  * 2021-04-12  Initial Commit
  */
 
@@ -49,6 +50,10 @@ public class LVector {
   
   public double getMagnitude() {
     return Math.sqrt(x * x + y * y + z * z);
+  }
+
+  public double getHeading() {
+    return Math.atan2(y, x);
   }
   
   @Override
@@ -118,7 +123,7 @@ public class LVector {
     vector.scale(scalar);
     return vector;
   }
-  
+
   public void normalize() {
     double mag = this.getMagnitude();
     if (mag != 0) {
