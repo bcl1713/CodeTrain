@@ -17,9 +17,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-public class LPendulum implements Runnable {
-
-  Canvas container;
+public class LPendulum extends LRunnable {
 
   double angle;
   double aVelocity;
@@ -32,45 +30,23 @@ public class LPendulum implements Runnable {
   static final double GRAVITY_CONSTANT = -0.002;
 
   int updatesRequested = 0;
-  boolean running;
-  private static final int MAX_UPDATES_PER_SECOND = 120;
-  Thread thread;
 
   public LPendulum(Canvas container) {
-    this.container = container;
+    super(container);
     angle = Math.PI / 4;
     length = 180;
     origin = new LVector(container.getWidth() / 2.0, 0);
     bob = new LVector(Math.sin(angle) * length, Math.cos(angle) * length);
     bob.add(origin);
-    thread = new Thread(this, "Pendulum");
-  }
-  
-  @Override
-  public void run() {
-    running = true;
-    while (running) {
-      if (updatesRequested > 0) {
-        update();
-        updatesRequested--;
-      }
-      try {
-        Thread.sleep(1000 / MAX_UPDATES_PER_SECOND);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-        thread.interrupt();
-      }
-    }
   }
 
   public void render(Graphics2D graphics) {
     graphics.setColor(Color.GREEN);
-
     graphics.drawLine((int)origin.getX(), (int)origin.getY(), (int)bob.getX(), (int)bob.getY());
     graphics.fillOval((int)bob.getX() - 16, (int)bob.getY() - 16, 32, 32);
   }
 
-  void update() {
+  public void update() {
     aAcceleration = Math.sin(angle) * GRAVITY_CONSTANT;
     aVelocity += aAcceleration;
     angle += aVelocity;
@@ -79,13 +55,5 @@ public class LPendulum implements Runnable {
     bob.add(origin);
     aVelocity *= 0.9999;
 
-  }
-
-  public void requestUpdate() {
-    updatesRequested++;
-  }
-
-  public Thread getThread() {
-    return thread;
   }
 }

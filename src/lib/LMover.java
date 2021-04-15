@@ -7,6 +7,7 @@
  * Last Modified: Mon Apr 12 2021
  * HISTORY:
  * Date        Comments
+ * 2021-04-15  Move threading to super class LRunner
  * 2021-04-15  Add edge behavior selection
  * 2021-04-14  Growing
  * 2021-04-13  Put checkposition in here.. add bounce wrap or destroy later
@@ -22,7 +23,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-public class LMover implements Runnable {
+public class LMover extends LRunnable {
 
   LVector position = new LVector(0, 0);
   LVector velocity = new LVector(0, 0);
@@ -32,17 +33,11 @@ public class LMover implements Runnable {
   double aVelocity = 0;
   double aAcceleration = 0;
 
-  Canvas container;
   Color color;
 
   double speedLimit = 0;
   boolean speedLimited = false;
   
-  boolean running = false;
-  static final int UPDATES_PER_SECOND = 120;
-  Thread thread;
-  private int updatesRequested = 0;
-
   double size = 30;
   double mass = 1;
 
@@ -53,8 +48,7 @@ public class LMover implements Runnable {
   private int edgeBehavior = 2;
 
   public LMover(Canvas container) {
-    thread = new Thread(this, "Mover");
-    this.container = container;
+    super(container);
   }
 
   public void addForce(LVector force) {
@@ -184,10 +178,6 @@ public class LMover implements Runnable {
     }
   }
 
-  public void requestUpdate() {
-    updatesRequested++;
-  }
-
   public double getAngle() {
     return angle;
   }
@@ -220,42 +210,12 @@ public class LMover implements Runnable {
     this.container = container;
   }
 
-  public Thread getThread() {
-    return thread;
-  }
-
-  @Override
-  public void run() {
-    running = true;
-    while (running) {
-      if(updatesRequested > 0) {
-        update();
-        updatesRequested--;
-      }
-      try {
-        Thread.sleep(1000 / UPDATES_PER_SECOND);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-        Thread.currentThread().interrupt();
-        return;
-      }
-    }
-  }
-
   public Color getColor() {
     return color;
   }
 
   public void setColor(Color color) {
     this.color = color;
-  }
-
-  public boolean isRunning() {
-    return running;
-  }
-
-  public void setRunning(boolean running) {
-    this.running = running;
   }
 
   public int getEdgeBehavior() {
