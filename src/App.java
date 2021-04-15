@@ -47,21 +47,34 @@ public class App extends LDisplay{
     @Override
     public void update() {
         for (LMover lMover : movers) {
+            for (LMover lMover2 : movers) {
+                LVector pull = LVector.sub(lMover2.getPosition(), lMover.getPosition());
+                pull.setMagnitude(0.0008);
+                lMover.addForce(pull);
+            }
             lMover.requestUpdate();
         }
     }
 
     @Override
     public void start() {
-        int numMovers = 100;
+        int numMovers = 128;
         for (int i = 0; i < numMovers; i++) {
             movers.add(new LMover(this));
             movers.get(i).setPosition(new LVector(
                 Math.random() * getWidth(),
                 Math.random() * getHeight()
             ));
-            movers.get(i).setVelocity(new LVector(0.3, 0.5));
+            movers.get(i).setVelocity(new LVector(
+                Math.random() * 4 - 2, 
+                Math.random() * 4 - 2
+                ));
             movers.get(i).setEdgeBehavior(LMover.WRAP);
+            movers.get(i).setSpeedLimit(4);
+            movers.get(i).setSpeedLimited(true);
+            movers.get(i).setSize(Math.random() * 32 + 32);
+            movers.get(i).setMass(movers.get(i).getSize() / 8);
+            System.out.println(movers.get(i).getMass());
         }
     }
 }

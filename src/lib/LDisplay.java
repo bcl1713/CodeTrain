@@ -31,7 +31,7 @@ public abstract class LDisplay extends Canvas implements Runnable, MouseInputLis
   private static final int UPDATES_PER_SECOND = 60;
 
 
-  private transient LMouse mouse = new LMouse();
+  protected transient LMouse mouse = new LMouse();
 
   private boolean running = true;
 
@@ -70,9 +70,7 @@ public abstract class LDisplay extends Canvas implements Runnable, MouseInputLis
     running = true;
   }
 
-  public void start() {
-  }
-
+  public abstract void start();
 
   @Override
   public void run() {

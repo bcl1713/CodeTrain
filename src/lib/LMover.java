@@ -75,6 +75,8 @@ public class LMover extends LRunnable {
 
     graphics.translate(position.getX(), position.getY());
     graphics.rotate(velocity.getHeading());
+    // graphics.translate(-size / 2, -size / 2);
+    // graphics.fillOval(0, 0, (int)size, (int)size);
     int[] yPoints = {(int)-size / 3, 0, (int)size / 3};
     int[] xPoints = {(int)-size / 2, (int)size / 2, (int)-size / 2};
     graphics.fillPolygon(xPoints, yPoints, 3);
