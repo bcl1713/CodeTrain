@@ -7,6 +7,7 @@
  * Last Modified: Mon Apr 12 2021
  * HISTORY:
  * Date        Comments
+ * 2021-04-15  Add edge behavior selection
  * 2021-04-14  Growing
  * 2021-04-13  Put checkposition in here.. add bounce wrap or destroy later
  * 2021-04-12  Add mass
@@ -43,6 +44,12 @@ public class LMover implements Runnable {
 
   double size = 30;
   double mass = 1;
+
+  public static final int WRAP = 0;
+  public static final int REFLECT = 1;
+  public static final int NONE = 2;
+
+  private int edgeBehavior = 2;
 
   public LMover(Canvas container) {
     thread = new Thread(this, "Mover");
@@ -136,21 +143,43 @@ public class LMover implements Runnable {
   }
   
   public void checkPosition() {
-    if (position.getX() < this.size / 2) {
-      velocity.setX(velocity.getX() * -1);
-      position.setX(this.size / 2);
-    }
-    if (position.getX() > container.getWidth() - this.size / 2) {
-      velocity.setX(velocity.getX() * -1);
-      position.setX(container.getWidth() - this.size / 2);
-    }
-    if (position.getY() < this.size / 2) {
-      velocity.setY(velocity.getY() * -1);
-      position.setY(this.size / 2);
-    }
-    if (position.getY() > container.getHeight() - this.size / 2) {
-      velocity.setY(velocity.getY() * -1);
-      position.setY(container.getHeight() - this.size / 2);
+    switch (edgeBehavior) {
+      case NONE:
+        break;
+      case REFLECT:
+        if (position.getX() < 0) {
+          velocity.setX(velocity.getX() * -1);
+          position.setX(0);
+        }
+        if (position.getX() > container.getWidth()) {
+          velocity.setX(velocity.getX() * -1);
+          position.setX(container.getWidth());
+        }
+        if (position.getY() < 0) {
+          velocity.setY(velocity.getY() * -1);
+          position.setY(0);
+        }
+        if (position.getY() > container.getHeight()) {
+          velocity.setY(velocity.getY() * -1);
+          position.setY(container.getHeight());
+        }
+        break;
+      case WRAP:
+        if (position.getX() < 0) {
+          position.setX(container.getWidth());
+        }
+        if (position.getX() > container.getWidth()) {
+          position.setX(0);
+        }
+        if (position.getY() < 0) {
+          position.setY(container.getHeight());
+        }
+        if (position.getY() > container.getHeight()) {
+          position.setY(0);
+        }
+        break;
+      default:
+        break;
     }
   }
 
@@ -212,6 +241,22 @@ public class LMover implements Runnable {
 
   public void setColor(Color color) {
     this.color = color;
+  }
+
+  public boolean isRunning() {
+    return running;
+  }
+
+  public void setRunning(boolean running) {
+    this.running = running;
+  }
+
+  public int getEdgeBehavior() {
+    return edgeBehavior;
+  }
+
+  public void setEdgeBehavior(int edgeBehavior) {
+    this.edgeBehavior = edgeBehavior;
   }
 
 }

@@ -53,7 +53,7 @@ public class App extends LDisplay{
                     movers[j].getPosition(), 
                     movers[i].getPosition()
                 );
-                dif.setMagnitude(0.0001);
+                dif.setMagnitude(0.00075);
                 movers[i].addForce(dif);
                 movers[i].setSize(movers[i].getSize() + 0.00001);
                 movers[i].setMass(movers[i].getSize() / 16);
@@ -64,7 +64,7 @@ public class App extends LDisplay{
 
     @Override
     public void start() {
-        int numMovers = 100;
+        int numMovers = 500;
         movers = new LMover[numMovers];
         for (int i = 0; i < numMovers; i++) {
             movers[i] = new LMover(this);
@@ -90,6 +90,7 @@ public class App extends LDisplay{
             ));
             movers[i].setSize((Math.random() * 24) + 24);
             movers[i].setMass(movers[i].getSize() / 16);
+            movers[i].setEdgeBehavior(LMover.WRAP);
         }
         
     }
