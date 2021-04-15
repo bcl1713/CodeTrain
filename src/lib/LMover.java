@@ -39,8 +39,9 @@ public class LMover implements Runnable {
   boolean speedLimited = false;
   
   boolean running = false;
-  static final int UPDATES_PER_SECOND = 60;
+  static final int UPDATES_PER_SECOND = 120;
   Thread thread;
+  private int updatesRequested = 0;
 
   double size = 30;
   double mass = 1;
@@ -183,6 +184,10 @@ public class LMover implements Runnable {
     }
   }
 
+  public void requestUpdate() {
+    updatesRequested++;
+  }
+
   public double getAngle() {
     return angle;
   }
@@ -222,9 +227,11 @@ public class LMover implements Runnable {
   @Override
   public void run() {
     running = true;
-    
     while (running) {
-      update();
+      if(updatesRequested > 0) {
+        update();
+        updatesRequested--;
+      }
       try {
         Thread.sleep(1000 / UPDATES_PER_SECOND);
       } catch (InterruptedException e) {
