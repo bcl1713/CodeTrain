@@ -2,11 +2,12 @@
  * File:         LSpring.java
  * Created Date: 2021-04-15
  * Author:       Brian Lucas
- * Purpose:      
+ * Purpose:      Spring class
  * -----
  * Last Modified: Thu Apr 15 2021
  * HISTORY:
  * Date        Comments
+ * 2021-04-15  Initial commit
  */
 
 

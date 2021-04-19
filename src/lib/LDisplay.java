@@ -7,6 +7,8 @@
  * Last Modified: Sun Apr 11 2021
  * HISTORY:
  * Date        Comments
+ * 2021-04-19  Fix sizing issue
+ * 2021-04-18  Make interface overridable
  * 2021-04-13  Add mouse interactions
  * 2021-04-12  Initial commit
  */
@@ -15,6 +17,7 @@
 package lib;
 
 import java.awt.Canvas;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.GridLayout;
@@ -36,6 +39,8 @@ public abstract class LDisplay extends Canvas implements Runnable, MouseInputLis
   private boolean running = true;
 
   private int fps;
+  protected int myWidth;
+  protected int myHeight;
 
   protected transient BufferStrategy bufferStrategy;
   protected transient Graphics2D graphics;
@@ -49,25 +54,32 @@ public abstract class LDisplay extends Canvas implements Runnable, MouseInputLis
     this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
   }
 
-  protected LDisplay(int width, int height) {
+  protected LDisplay(int w, int h) {
     super();
-    setSize(width, height);
+    this.myWidth = w;
+    this.myHeight = h;
+    buildInterface();
+    Thread thread = new Thread(this, "Display");
+    thread.start();
+    running = true;
+  }
+
+  public void buildInterface() {
+    setSize(myWidth, myHeight);
     setLocation(0, 0);
+    setPreferredSize(new Dimension(800,600));
     JFrame frame = new JFrame();
-    frame.setSize(getWidth()+100, getHeight()+100);
     frame.setResizable(false);
-    frame.getContentPane().setLayout(new GridLayout(1,1));
+    frame.getContentPane().setLayout(new GridLayout(1, 1));
     frame.add(this);
+    frame.pack();
     frame.setVisible(true);
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     createBufferStrategy(2);
     bufferStrategy = getBufferStrategy();
-    Thread thread = new Thread(this, "Display");
     graphics = (Graphics2D) bufferStrategy.getDrawGraphics();
     this.addMouseMotionListener(this);
     this.addMouseListener(this);
-    thread.start();
-    running = true;
   }
 
   public abstract void start();

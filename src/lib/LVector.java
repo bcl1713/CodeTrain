@@ -7,6 +7,7 @@
  * Last Modified: Mon Apr 12 2021
  * HISTORY:
  * Date        Comments
+ * 2021-04-18  Add dot product, anglebetween, distance
  * 2021-04-14  Add Heading
  * 2021-04-12  Initial Commit
  */
@@ -56,6 +57,20 @@ public class LVector {
     return Math.atan2(y, x);
   }
   
+  public double dot(LVector v) {
+    return x * v.getX() + y * v.getY() + z * v.getZ();
+  }
+
+  public static double angleBetween(LVector v1, LVector v2) {
+    double dot = v1.dot(v2);
+    return Math.acos(dot / (v1.getMagnitude() * v2.getMagnitude()));
+  }
+
+  public static double distance(LVector v1, LVector v2) {
+    LVector between = sub(v1, v2);
+    return between.getMagnitude();
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

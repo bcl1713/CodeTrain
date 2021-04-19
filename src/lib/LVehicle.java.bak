@@ -1,0 +1,138 @@
+/*
+ * File:         LVehicle.java
+ * Created Date: 2021-04-17
+ * Author:       Brian Lucas
+ * Purpose:      Create a Vehicle Class
+ * -----
+ * Last Modified: Sat Apr 17 2021
+ * HISTORY:
+ * Date        Comments
+ * 2021-04-17  Initial Commit
+ */
+
+
+package lib;
+
+import java.awt.Canvas;
+import java.util.List;
+
+public class LVehicle extends LMover{
+
+  public LVehicle(Canvas container) {
+    super(container);
+  }
+
+  public void seek(LVector target) {
+    LVector desired = LVector.sub(target, position);
+
+    if (desired.getMagnitude() == 0) {
+      return;
+    }
+
+    desired.normalize();
+    desired.scale(maxVelocity);
+    LVector steer = LVector.sub(desired, velocity);
+    steer.scale(3);
+    addForce(steer);
+  }
+
+  /**
+   * This function implements Craig Reynolds' path following algorithm.
+   * http://www.red3d.com/cwr/steer/PathFollow.html
+   * 
+   * @param p
+   */
+  public void follow(LPath p) {
+    
+    LVector predict  = this.velocity.copy();
+    predict.normalize();
+    predict.scale(25);
+    LVector predictPos = LVector.add(this.position, predict);
+
+    LVector normal = null;
+    LVector target = null;
+    double worldRecord = 1000000000;
+
+    for (int i = 0; i < p.getPoints().size(); i++) {
+      
+      LVector a = p.getPoints().get(i);
+      LVector b = p.getPoints().get((i + 1) % p.getPoints().size());
+
+      LVector normalPoint = getNormalPoint(predictPos, a, b);
+
+      LVector dir = LVector.sub(b, a);
+
+      if (normalPoint.getX() < Math.min(a.getX(), b.getX()) || 
+          normalPoint.getX() > Math.max(a.getX(), b.getX()) || 
+          normalPoint.getY() < Math.min(a.getY(), b.getY()) || 
+          normalPoint.getY() > Math.max(a.getY(), b.getY())) {
+        normalPoint = b.copy();
+        a = p.getPoints().get((i + 1) % p.getPoints().size());
+        b = p.getPoints().get((i + 2) % p.getPoints().size());
+        dir = LVector.sub(b, a);
+      }
+
+      double d = LVector.distance(predictPos, normalPoint);
+
+      if (d < worldRecord) {
+        worldRecord = d;
+        normal = normalPoint;
+
+        dir.normalize();
+        dir.scale(25);
+        target = normal.copy();
+        target.add(dir);
+      }
+
+    }
+
+    if (worldRecord > p.getRadius()) {
+      seek(target);
+    }
+
+  }
+
+  private LVector getNormalPoint(LVector p, LVector a, LVector b) {
+    LVector ap = LVector.sub(p, a);
+    LVector ab = LVector.sub(b, a);
+
+    ab.normalize();
+    ab.scale(ap.dot(ab));
+
+    return LVector.add(a, ab);
+  }
+
+  public void separate(List<LVehicle> vehicles) {
+
+    double desiredSeparation = size * 2;
+    LVector steer = new LVector(0, 0);
+    int count = 0;
+
+    for (int i = 0; i < vehicles.size(); i++) {
+      LVehicle other = vehicles.get(i);
+      double d = LVector.distance(position, other.getPosition());
+      if ((d > 0) && (d < desiredSeparation)) {
+        LVector diff = LVector.sub(position, other.getPosition());
+        diff.normalize();
+        diff.scale(1 / d);
+        steer.add(diff);
+        count++;
+      }
+    }
+
+    if (count > 0) {
+      steer.scale(1.0 / count);
+    }
+
+    if (steer.getMagnitude() > 0) {
+      steer.normalize();
+      steer.scale(maxVelocity);
+      steer.sub(velocity);
+      steer.limit(maxAcceleration);
+    }
+
+    steer.scale(2);
+    addForce(steer);
+  }
+
+}

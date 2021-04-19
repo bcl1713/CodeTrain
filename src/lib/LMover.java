@@ -35,11 +35,13 @@ public class LMover extends LRunnable {
 
   Color color;
 
-  double speedLimit = 0;
-  boolean speedLimited = false;
+  double maxVelocity = -1;
+  double maxAcceleration = -1;
   
   double size = 30;
   double mass = 1;
+
+  double heading;
 
   public static final int WRAP = 0;
   public static final int REFLECT = 1;
@@ -57,11 +59,14 @@ public class LMover extends LRunnable {
   }
 
   public void update() {
-    velocity.add(acceleration);
-    position.add(velocity);
-    if (speedLimited) {
-      velocity.limit(speedLimit);
+    if (maxAcceleration > 0) {
+      acceleration.limit(maxAcceleration);
     }
+    velocity.add(acceleration);
+    if (maxVelocity > 0) {
+      velocity.limit(maxVelocity);
+    }
+    position.add(velocity);
     acceleration.scale(0);
     aVelocity += aAcceleration;
     angle += aVelocity;
@@ -74,12 +79,12 @@ public class LMover extends LRunnable {
     AffineTransform t = graphics.getTransform();
 
     graphics.translate(position.getX(), position.getY());
-    graphics.rotate(velocity.getHeading());
-    // graphics.translate(-size / 2, -size / 2);
-    // graphics.fillOval(0, 0, (int)size, (int)size);
-    int[] yPoints = {(int)-size / 3, 0, (int)size / 3};
-    int[] xPoints = {(int)-size / 2, (int)size / 2, (int)-size / 2};
-    graphics.fillPolygon(xPoints, yPoints, 3);
+    graphics.rotate(getHeading());
+    graphics.translate(-size / 2, -size / 2);
+    graphics.fillOval(0, 0, (int)size, (int)size);
+    // int[] yPoints = {(int)-size / 3, 0, (int)size / 3};
+    // int[] xPoints = {(int)-size / 2, (int)size / 2, (int)-size / 2};
+    // graphics.fillPolygon(xPoints, yPoints, 3);
     graphics.setTransform(t);
   }
 
@@ -112,19 +117,11 @@ public class LMover extends LRunnable {
   }
 
   public double getSpeedLimit() {
-    return speedLimit;
+    return maxVelocity;
   }
 
   public void setSpeedLimit(double speedLimit) {
-    this.speedLimit = speedLimit;
-  }
-
-  public boolean isSpeedLimited() {
-    return speedLimited;
-  }
-
-  public void setSpeedLimited(boolean speedLimited) {
-    this.speedLimited = speedLimited;
+    this.maxVelocity = speedLimit;
   }
 
   public void setSize(double size) {
@@ -227,5 +224,30 @@ public class LMover extends LRunnable {
   public void setEdgeBehavior(int edgeBehavior) {
     this.edgeBehavior = edgeBehavior;
   }
+
+  public double getMaxVelocity() {
+    return maxVelocity;
+  }
+
+  public void setMaxVelocity(double maxVelocity) {
+    this.maxVelocity = maxVelocity;
+  }
+
+  public double getMaxAcceleration() {
+    return maxAcceleration;
+  }
+
+  public void setMaxAcceleration(double maxAcceleration) {
+    this.maxAcceleration = maxAcceleration;
+  }
+
+  public double getHeading() {
+    if (velocity.getMagnitude() != 0) {
+      heading = velocity.getHeading();
+    }
+    return heading;
+  }
+
+ 
 
 }

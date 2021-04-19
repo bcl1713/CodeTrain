@@ -70,8 +70,7 @@ public class App extends LDisplay{
                 Math.random() * 4 - 2
                 ));
             movers.get(i).setEdgeBehavior(LMover.WRAP);
-            movers.get(i).setSpeedLimit(4);
-            movers.get(i).setSpeedLimited(true);
+            movers.get(i).setMaxVelocity(4);
             movers.get(i).setSize(Math.random() * 32 + 32);
             movers.get(i).setMass(movers.get(i).getSize() / 8);
             System.out.println(movers.get(i).getMass());
