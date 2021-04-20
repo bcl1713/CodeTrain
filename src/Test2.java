@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -227,21 +226,22 @@ public class Test2 extends LDisplay {
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    intersections++;
-    for (LVehicle vehicle : vehicles) {
-      vehicle.setRunning(false);
-    }
-    vehicles.clear();
-    for (int i = 0; i < nodeRows; i++) {
-      for (int j = 0; j < nodeCols; j++) {
-        nodes[i][j].setRunning(false);
-      }
-    }
-    buildGrid();
-    for (int i = 0; i < STARTING_VEHICLES; i++) {
-      addVehicle();
-    }
-    super.mouseClicked(e);
+    // intersections++;
+    // for (LVehicle vehicle : vehicles) {
+    //   vehicle.setRunning(false);
+    // }
+    // vehicles.clear();
+    // for (int i = 0; i < nodeRows; i++) {
+    //   for (int j = 0; j < nodeCols; j++) {
+    //     nodes[i][j].setRunning(false);
+    //   }
+    // }
+    // buildGrid();
+    // for (int i = 0; i < STARTING_VEHICLES; i++) {
+    //   addVehicle();
+    // }
+    // super.mouseClicked(e);
+    addVehicle();
   }
 
 

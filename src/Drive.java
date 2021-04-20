@@ -28,8 +28,7 @@ public class Drive extends LDisplay {
 
   @Override
   public void start() {
-    vehicle = new LVehicle(this);
-    vehicle.setPosition(new LVector(getWidth() / 2, getHeight() / 2));
+    vehicle = new LVehicle(this, getWidth() / 2.0, getHeight() / 2.0);
     vehicle.setMaxAcceleration(0.5);
     vehicle.setMaxVelocity(5);
     vehicle.setBreakingDistance(100);
