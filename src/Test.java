@@ -13,7 +13,6 @@
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,9 +53,7 @@ public class Test extends LDisplay {
   @Override
   public void buildInterface() {
     JButton button = new JButton("Add Mover");
-    button.addActionListener(e -> {
-      addVehicle();
-    });
+    button.addActionListener(e -> addVehicle());
     
     this.setLocation(0, 0);
     this.setSize(myWidth, myHeight);
@@ -111,14 +108,15 @@ public class Test extends LDisplay {
   }
 
   private void addVehicle(){
-    LVehicle mover = new LVehicle(container);
+    LVehicle mover = new LVehicle(
+      container,
+      Math.random() * myWidth,
+      Math.random() * myHeight
+    );
     mover.setVelocity(
       new LVector(
         Math.random() * 4 - 2, 
         Math.random() * 4 - 2));
-    mover.setPosition(new LVector(
-      Math.random() * myWidth, 
-      Math.random() * myHeight));
     mover.setEdgeBehavior(LMover.WRAP);
     mover.setMaxAcceleration(0.3);
     mover.setMaxVelocity(3);
@@ -147,8 +145,6 @@ public class Test extends LDisplay {
   public void update() {
     synchronized (movers) {
       for (LVehicle lMover : movers) {
-        lMover.follow(path);
-        lMover.separate(movers);
         lMover.requestUpdate();
       }
     }

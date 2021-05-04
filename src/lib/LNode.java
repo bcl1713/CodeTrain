@@ -159,11 +159,7 @@ public class LNode extends LRunnable{
   }
 
   private boolean isAccpting(LNode lNode) {
-    if (acceptedNode == lNode && occupiers.isEmpty()) {
-      return true;
-    } else {
-      return false;
-    }
+    return (acceptedNode == lNode && occupiers.isEmpty()); 
   }
 
   private void nextAcceptedNode() {

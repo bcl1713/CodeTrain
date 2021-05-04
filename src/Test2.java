@@ -61,10 +61,10 @@ public class Test2 extends LDisplay {
 
   private void addVehicle() {
     LVehicle vehicle = new LVehicle(this, Math.random() * 800, Math.random() * 600);
-    vehicle.setMaxVelocity(Math.random() * 0.125 + 2) ;
+    vehicle.setMaxVelocity(Math.random() * (NODE_RADIUS / 100.0) + 2) ;
     vehicle.setMaxAcceleration(vehicle.getMaxVelocity() / 10);
     vehicle.setEdgeBehavior(LMover.WRAP);
-    vehicle.setSize(NODE_RADIUS * 1.75);
+    vehicle.setSize(NODE_RADIUS * 0.5);
     vehicle.setBreakingDistance(NODE_RADIUS * 1.75);
     vehicle.setColor(Color.BLUE);
     vehicles.add(vehicle);
@@ -95,8 +95,8 @@ public class Test2 extends LDisplay {
         LNode node = new LNode(
             this, 
             new LVector(
-                j*(NODE_RADIUS * 2) + NODE_RADIUS + BUFFER, 
-                i*(NODE_RADIUS * 2) + NODE_RADIUS + BUFFER
+                j*(NODE_RADIUS * 2) + (double)NODE_RADIUS + BUFFER, 
+                i*(NODE_RADIUS * 2) + (double)NODE_RADIUS + BUFFER
                 ), 
             NODE_RADIUS);
         nodes[i][j] = node;
